@@ -10,21 +10,18 @@ def read_file(filepath, plot=True):
     df['week'] = pd.to_datetime(df['week'])
     plt.figure(figsize=(8, 3))
     df = df[df['interest'] != "<1"]
-    df['interest'] = pd.to_numeric(df['interest'], errors='coerce')  # Convert 'interest' to numeric
+    df['interest'] = pd.to_numeric(df['interest'], errors='coerce')  # Convert interest to numeric
 
     if plot:
         sns.lineplot(data=df, x='week', y='interest', hue='region')
     return df
 
-# Now, when performing aggregation:
 workout = read_file('workout.csv')
 workout['interest'] = pd.to_numeric(workout['interest'], errors='coerce')
 
-# Group by month and calculate mean interest for each month
-workout['month'] = workout['week'].dt.to_period('M')  # Create a new 'month' column
+workout['month'] = workout['week'].dt.to_period('M')  # Create a new month column
 monthly_mean = workout.groupby('month')['interest'].mean()
 
-# Find the month with the highest mean interest
 max_mean_interest = monthly_mean.idxmax()
 month_str = str(max_mean_interest.to_timestamp().date())
 
